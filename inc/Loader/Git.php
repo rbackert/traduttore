@@ -24,10 +24,18 @@ class Git extends Base {
 	 */
 	public function download(): ?string {
 		$target = $this->get_local_path();
+		$branch = $this->repository->get_branch();
 
 		if ( is_dir( $target ) ) {
 			$current_dir = getcwd();
 			chdir( $target );
+
+			if ( $branch ) {
+				exec(
+					escapeshellcmd( sprintf( 'git checkout %1$s -q', escapeshellarg( $branch ) ) ), $output, $status
+				);
+			}
+
 			exec( escapeshellcmd( 'git reset --hard -q' ), $output, $status );
 			exec( escapeshellcmd( 'git pull -q' ), $output, $status );
 			chdir( $current_dir );
@@ -38,9 +46,10 @@ class Git extends Base {
 		exec(
 			escapeshellcmd(
 				sprintf(
-					'git clone --depth=1 %1$s %2$s -q',
+					'git clone --depth=1 %3$s %1$s %2$s -q',
 					escapeshellarg( $this->get_clone_url() ),
-					escapeshellarg( $target )
+					escapeshellarg( $target ),
+					$branch ? escapeshellarg( '--branch=' . $branch ) : '',
 				)
 			),
 			$output,

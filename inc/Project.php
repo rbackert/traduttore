@@ -39,6 +39,13 @@ class Project {
 	protected const REPOSITORY_NAME_KEY = '_traduttore_repository_name';
 
 	/**
+	 * Project repository branch meta key.
+	 *
+	 * @since 3.0.0
+	 */
+	protected const REPOSITORY_BRANCH_KEY = '_traduttore_repository_branch';
+
+	/**
 	 * Project repository visibility meta key.
 	 *
 	 * @since 3.0.0
@@ -280,6 +287,18 @@ class Project {
 	 */
 	public function set_repository_name( string $name ): bool {
 		return (bool) gp_update_meta( $this->project->id, static::REPOSITORY_NAME_KEY, $name, 'project' );
+	}
+
+	/**
+	 * Updates the project's repository branch.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param string $branch The new branch.
+	 * @return bool Whether the data was successfully saved or not.
+	 */
+	public function set_repository_branch( string $branch ): bool {
+		return (bool) gp_update_meta( $this->project->id, static::REPOSITORY_BRANCH_KEY, $branch, 'project' );
 	}
 
 	/**

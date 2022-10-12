@@ -170,4 +170,23 @@ abstract class Base implements Repository {
 
 		return $https_url;
 	}
+
+	/**
+	 * Returns the repository branch.
+	 *
+	 * @return string Repository branch.
+	 */
+	public function get_branch(): ?string {
+		$branch = null;
+		$url    = $this->project->get_source_url_template();
+
+		if ( $url ) {
+			$path   = trim( wp_parse_url( $url, PHP_URL_PATH ), '/' );
+			$path   = substr( $path, \strlen( $this->get_name() ) );
+			$parts  = explode( '/', $path );
+			$branch = $parts[1] ?? null;
+		}
+
+		return $branch;
+	}
 }

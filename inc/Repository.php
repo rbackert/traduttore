@@ -117,4 +117,11 @@ interface Repository {
 	 * @return string HTTPS URL to the repository.
 	 */
 	public function get_https_url(): ?string;
+
+	/**
+	 * Returns the repository branch.
+	 *
+	 * @return string Repository branch.
+	 */
+	public function get_branch(): ?string;
 }
