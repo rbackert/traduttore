@@ -98,6 +98,16 @@ class ProjectLocator {
 	 * @return \GP_Project|null Project on success, null otherwise.
 	 */
 	protected function find_by_repository_name( string $project ): ?GP_Project {
+		// Get repository name and branch using name/space/repo:branch syntax.
+		$parts = explode( ':', $project );
+
+		if ( 1 === \count( $parts ) ) {
+			// Likely default branches.
+			$parts[] = null;
+		}
+
+		list( $project, $branch ) = $parts;
+
 		global $wpdb;
 
 		$meta_key = '_traduttore_repository_name';
@@ -108,16 +118,33 @@ class ProjectLocator {
 			$project
 		);
 
-		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-		$result = $wpdb->get_row( $query );
+		$found_project = false;
 
-		if ( ! $result ) {
-			return null;
+		if ( $branch ) {
+			// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+			$results            = $wpdb->get_results( $query );
+			$repository_factory = new RepositoryFactory();
+
+			foreach ( $results as $result ) {
+				$gp_project  = GP::$project->get( (int) $result->object_id );
+				$trd_project = new Project( $gp_project );
+				$trd_branch  = $repository_factory->get_repository( $trd_project )->get_branch();
+
+				if ( $branch === $trd_branch ) {
+					$found_project = $gp_project;
+					break;
+				}
+			}
+		} else {
+			// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+			$result = $wpdb->get_row( $query );
+
+			if ( $result ) {
+				$found_project = GP::$project->get( (int) $result->object_id );
+			}
 		}
 
-		$gp_project = GP::$project->get( (int) $result->object_id );
-
-		return $gp_project ?: null;
+		return $found_project ?: null;
 	}
 
 	/**

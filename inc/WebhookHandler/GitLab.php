@@ -40,8 +40,10 @@ class GitLab extends Base {
 			return false;
 		}
 
-		$params  = $this->request->get_params();
-		$locator = new ProjectLocator( $params['project']['homepage'] ?? null );
+		$params       = $this->request->get_params();
+		$event_branch = empty( $params['ref'] ) ? null : $this->get_branch( $params['ref'] );
+
+		$locator = new ProjectLocator( trailingslashit( $params['project']['homepage'] ?? null ) . '-/blob/' . $event_branch );
 		$project = $locator->get_project();
 
 		$secret = $this->get_secret( $project );
@@ -57,14 +59,10 @@ class GitLab extends Base {
 	 * @return \WP_Error|\WP_REST_Response REST response on success, error object on failure.
 	 */
 	public function callback() {
-		$params = $this->request->get_params();
+		$params       = $this->request->get_params();
+		$event_branch = $params['ref'] ? $this->get_branch( $params['ref'] ) : null;
 
-		// We only care about the default branch but don't want to send an error still.
-		if ( 'refs/heads/' . $params['project']['default_branch'] !== $params['ref'] ) {
-			return new WP_REST_Response( [ 'result' => 'Not the default branch' ] );
-		}
-
-		$locator = new ProjectLocator( $params['project']['homepage'] );
+		$locator = new ProjectLocator( trailingslashit( $params['project']['homepage'] ) . '-/blob/' . $event_branch );
 		$project = $locator->get_project();
 
 		if ( ! $project ) {
@@ -88,5 +86,17 @@ class GitLab extends Base {
 		( new Updater( $project ) )->schedule_update();
 
 		return new WP_REST_Response( [ 'result' => 'OK' ] );
+	}
+
+	/**
+	 * Extract branch from ref.
+	 *
+	 * @param string $ref Git ref.
+	 */
+	protected function get_branch( string $ref ): ?string {
+		$prefix = 'refs/heads/';
+		return 0 === strpos( $ref, $prefix )
+			? substr( $ref, \strlen( $prefix ) )
+			: null;
 	}
 }

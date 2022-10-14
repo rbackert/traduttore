@@ -82,7 +82,7 @@ class GitLab extends Base {
 
 		if ( $url ) {
 			$path   = trim( wp_parse_url( $url, PHP_URL_PATH ), '/' );
-			$path   = substr( $path, \strlen( $this->get_name() ) );
+			$path   = trim( substr( $path, \strlen( $this->get_name() ) ), '/' );
 			$parts  = explode( '/', $path );
 			$branch = $parts[2] ?? '';
 		}

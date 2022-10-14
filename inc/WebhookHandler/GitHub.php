@@ -44,8 +44,10 @@ class GitHub extends Base {
 			return false;
 		}
 
-		$params  = $this->request->get_params();
-		$locator = new ProjectLocator( $params['repository']['html_url'] ?? null );
+		$params       = $this->request->get_params();
+		$event_branch = empty( $params['ref'] ) ? null : $this->get_branch( $params['ref'] );
+
+		$locator = new ProjectLocator( trailingslashit( $params['repository']['html_url'] ?? null ) . 'blob/' . $event_branch );
 		$project = $locator->get_project();
 
 		$secret = $this->get_secret( $project );
@@ -76,16 +78,9 @@ class GitHub extends Base {
 			$params = json_decode( $params['payload'], true );
 		}
 
-		if ( ! isset( $params['repository']['default_branch'] ) ) {
-			return new \WP_Error( '400', 'Request incomplete', [ 'status' => 400 ] );
-		}
+		$event_branch = $params['ref'] ? $this->get_branch( $params['ref'] ) : null;
 
-		// We only care about the default branch but don't want to send an error still.
-		if ( 'refs/heads/' . $params['repository']['default_branch'] !== $params['ref'] ) {
-			return new WP_REST_Response( [ 'result' => 'Not the default branch' ] );
-		}
-
-		$locator = new ProjectLocator( $params['repository']['html_url'] );
+		$locator = new ProjectLocator( trailingslashit( $params['repository']['html_url'] ) . 'blob/' . $event_branch );
 		$project = $locator->get_project();
 
 		if ( ! $project ) {
@@ -109,5 +104,17 @@ class GitHub extends Base {
 		( new Updater( $project ) )->schedule_update();
 
 		return new WP_REST_Response( [ 'result' => 'OK' ] );
+	}
+
+	/**
+	 * Extract branch from ref.
+	 *
+	 * @param string $ref Git ref.
+	 */
+	protected function get_branch( string $ref ): ?string {
+		$prefix = 'refs/heads/';
+		return 0 === strpos( $ref, $prefix )
+			? substr( $ref, \strlen( $prefix ) )
+			: null;
 	}
 }
