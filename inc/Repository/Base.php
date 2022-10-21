@@ -7,6 +7,7 @@
 
 namespace Required\Traduttore\Repository;
 
+use Required\Traduttore\GitUrl;
 use Required\Traduttore\Project;
 use Required\Traduttore\Repository;
 
@@ -172,21 +173,50 @@ abstract class Base implements Repository {
 	}
 
 	/**
+	 * Returns the relevant filepath within the repository.
+	 *
+	 * @return string|null Repository filepath.
+	 */
+	public function get_filepath(): ?string {
+		return $this->parse_source_url_template()->filepath ?? null;
+	}
+
+	/**
 	 * Returns the repository branch.
 	 *
 	 * @return string Repository branch.
 	 */
 	public function get_branch(): ?string {
-		$branch = null;
+		$parsed = $this->parse_source_url_template();
+		return $parsed->ref ?? null;
+	}
+
+	/**
+	 * Parse a GlotPress source url into parts.
+	 *
+	 * @return \Required\Tradutore\GitUrl
+	 */
+	public function parse_source_url_template(): GitUrl {
+		$parsed = new GitUrl();
 		$url    = $this->project->get_source_url_template();
 
 		if ( $url ) {
-			$path   = trim( wp_parse_url( $url, PHP_URL_PATH ), '/' );
-			$path   = trim( substr( $path, \strlen( $this->get_name() ) ), '/' );
-			$parts  = explode( '/', $path );
-			$branch = $parts[1] ?? null;
+			$path  = trim( wp_parse_url( $url, PHP_URL_PATH ), '/' );
+			$parts = explode( '/', $path );
+
+			$parsed->owner     = $parts[0];
+			$parsed->name      = $parts[1];
+			$parsed->full_name = implode( '/', array_splice( $parts, 0, 2 ) );
+
+			array_shift( $parts );
+
+			$parsed->branch = array_shift( $parts );
+
+			array_pop( $parts );
+
+			$parsed->filepath = implode( '/', $parts );
 		}
 
-		return $branch;
+		return $parsed;
 	}
 }

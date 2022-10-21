@@ -124,4 +124,11 @@ interface Repository {
 	 * @return string Repository branch.
 	 */
 	public function get_branch(): ?string;
+
+	/**
+	 * Returns the relevant filepath within the repository.
+	 *
+	 * @return string Repository filepath.
+	 */
+	public function get_filepath(): ?string;
 }

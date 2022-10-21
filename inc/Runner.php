@@ -83,15 +83,21 @@ class Runner {
 
 		$this->updater->add_lock();
 
-		$local_repository = $cached ? $this->loader->get_local_path() : $this->loader->download();
+		if ( $cached ) {
+			$this->loader->get_local_path();
+		} else {
+			$this->loader->download();
+		}
 
-		if ( ! $local_repository || ! is_dir( $local_repository ) ) {
+		$package_path = $this->loader->get_package_path();
+
+		if ( ! $package_path || ! is_dir( $package_path ) ) {
 			$this->updater->remove_lock();
 
 			return false;
 		}
 
-		$configuration = new Configuration( $local_repository );
+		$configuration = new Configuration( $package_path );
 
 		$result = $this->updater->update( $configuration );
 

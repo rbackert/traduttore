@@ -49,4 +49,22 @@ abstract class Base implements Loader {
 			sanitize_title( $this->repository->get_name() )
 		);
 	}
+
+	/**
+	 * Returns the local package path.
+	 *
+	 * @since 3.1.0
+	 *
+	 * @return string Package path.
+	 */
+	public function get_package_path(): string {
+		$package_path = $this->get_local_path();
+		$filepath     = $this->repository->get_filepath();
+
+		if ( $filepath ) {
+			$package_path = trailingslashit( $package_path ) . $filepath;
+		}
+
+		return $package_path;
+	}
 }

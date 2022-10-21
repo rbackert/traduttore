@@ -32,7 +32,9 @@ class Git extends Base {
 
 			if ( $branch ) {
 				exec(
-					escapeshellcmd( sprintf( 'git checkout %1$s -q', escapeshellarg( $branch ) ) ), $output, $status
+					escapeshellcmd( sprintf( 'git checkout %1$s -q', escapeshellarg( $branch ) ) ),
+					$output,
+					$status
 				);
 			}
 

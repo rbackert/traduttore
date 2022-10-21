@@ -34,11 +34,20 @@ interface Loader {
 	public function download(): ?string;
 
 	/**
-	 * Returns the local repository path..
+	 * Returns the local repository path.
 	 *
 	 * @since 3.0.0
 	 *
 	 * @return string Repository path.
 	 */
 	public function get_local_path(): string;
+
+	/**
+	 * Returns the local package path.
+	 *
+	 * @since 3.1.0
+	 *
+	 * @return string Package path.
+	 */
+	public function get_package_path(): string;
 }
