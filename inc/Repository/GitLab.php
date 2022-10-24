@@ -75,6 +75,8 @@ class GitLab extends Base {
 	/**
 	 * Returns the repository branch.
 	 *
+	 * @since 3.1.0
+	 *
 	 * @return string Repository branch.
 	 */
 	public function get_branch(): string {
@@ -84,6 +86,8 @@ class GitLab extends Base {
 
 	/**
 	 * Parse a GlotPress source url into parts.
+	 *
+	 * @since 3.1.0
 	 *
 	 * @return \Required\Tradutore\GitUrl
 	 */

@@ -126,7 +126,9 @@ interface Repository {
 	public function get_branch(): ?string;
 
 	/**
-	 * Returns the relevant filepath within the repository.
+	 * Returns the repository's filepath for using monorepo projects based on the project's source URL template.
+	 *
+	 * @since 3.1.0
 	 *
 	 * @return string Repository filepath.
 	 */

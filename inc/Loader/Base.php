@@ -51,20 +51,20 @@ abstract class Base implements Loader {
 	}
 
 	/**
-	 * Returns the local package path.
+	 * Returns the local project path (for monorepos).
 	 *
 	 * @since 3.1.0
 	 *
-	 * @return string Package path.
+	 * @return string Project path.
 	 */
-	public function get_package_path(): string {
-		$package_path = $this->get_local_path();
+	public function get_project_path(): string {
+		$project_path = $this->get_local_path();
 		$filepath     = $this->repository->get_filepath();
 
 		if ( $filepath ) {
-			$package_path = trailingslashit( $package_path ) . $filepath;
+			$project_path = trailingslashit( $project_path ) . $filepath;
 		}
 
-		return $package_path;
+		return $project_path;
 	}
 }

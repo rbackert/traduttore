@@ -89,15 +89,15 @@ class Runner {
 			$this->loader->download();
 		}
 
-		$package_path = $this->loader->get_package_path();
+		$project_path = $this->loader->get_project_path();
 
-		if ( ! $package_path || ! is_dir( $package_path ) ) {
+		if ( ! $project_path || ! is_dir( $project_path ) ) {
 			$this->updater->remove_lock();
 
 			return false;
 		}
 
-		$configuration = new Configuration( $package_path );
+		$configuration = new Configuration( $project_path );
 
 		$result = $this->updater->update( $configuration );
 

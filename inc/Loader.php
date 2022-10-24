@@ -43,11 +43,11 @@ interface Loader {
 	public function get_local_path(): string;
 
 	/**
-	 * Returns the local package path.
+	 * Returns the local project path (for monorepos).
 	 *
 	 * @since 3.1.0
 	 *
-	 * @return string Package path.
+	 * @return string Project path.
 	 */
-	public function get_package_path(): string;
+	public function get_project_path(): string;
 }

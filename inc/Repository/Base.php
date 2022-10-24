@@ -173,7 +173,9 @@ abstract class Base implements Repository {
 	}
 
 	/**
-	 * Returns the relevant filepath within the repository.
+	 * Returns the repository's filepath for using monorepo projects based on the project's source URL template.
+	 *
+	 * @since 3.1.0
 	 *
 	 * @return string|null Repository filepath.
 	 */
@@ -184,6 +186,8 @@ abstract class Base implements Repository {
 	/**
 	 * Returns the repository branch.
 	 *
+	 * @since 3.1.0
+	 *
 	 * @return string Repository branch.
 	 */
 	public function get_branch(): ?string {
@@ -193,6 +197,8 @@ abstract class Base implements Repository {
 
 	/**
 	 * Parse a GlotPress source url into parts.
+	 *
+	 * @since 3.1.0
 	 *
 	 * @return \Required\Tradutore\GitUrl
 	 */
