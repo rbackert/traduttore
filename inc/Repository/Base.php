@@ -216,7 +216,7 @@ abstract class Base implements Repository {
 
 			array_shift( $parts );
 
-			$parsed->branch = array_shift( $parts );
+			$parsed->ref = array_shift( $parts );
 
 			array_pop( $parts );
 

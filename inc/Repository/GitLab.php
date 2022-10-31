@@ -105,7 +105,7 @@ class GitLab extends Base {
 
 			array_splice( $parts, 0, 2 );
 
-			$parsed->branch = array_shift( $parts );
+			$parsed->ref = array_shift( $parts );
 
 			array_pop( $parts );
 
