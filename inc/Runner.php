@@ -83,15 +83,10 @@ class Runner {
 
 		$this->updater->add_lock();
 
-		if ( $cached ) {
-			$this->loader->get_local_path();
-		} else {
-			$this->loader->download();
-		}
+		$local_repository = $cached ? $this->loader->get_local_path() : $this->loader->download();
+		$project_path     = $this->loader->get_project_path();
 
-		$project_path = $this->loader->get_project_path();
-
-		if ( ! $project_path || ! is_dir( $project_path ) ) {
+		if ( ! ( $local_repository && is_dir( $local_repository ) && is_dir( $project_path ) ) ) {
 			$this->updater->remove_lock();
 
 			return false;
